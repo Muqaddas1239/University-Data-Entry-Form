@@ -4,129 +4,145 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Student Records | University Portal</title>
+    <title>Student Records</title>
 
     <style>
-        * {
-            box-sizing: border-box;
-        }
-
         body {
-            margin: 0;
-            padding: 35px 20px;
             font-family: Arial, sans-serif;
-            background: #f1f5f9;
-            color: #1e293b;
+            background: #f4f7fb;
+            margin: 0;
+            padding: 30px;
         }
 
         .container {
-            max-width: 1100px;
+            max-width: 1200px;
             margin: auto;
-        }
-
-        .header {
-            margin-bottom: 25px;
-        }
-
-        .header h1 {
-            margin-bottom: 8px;
-            color: #0f172a;
-        }
-
-        .header p {
-            color: #64748b;
-        }
-
-        .card {
             background: white;
-            padding: 24px;
-            border-radius: 12px;
-            box-shadow: 0 8px 25px rgba(15, 23, 42, 0.06);
-            overflow-x: auto;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1);
         }
 
-        .table-heading {
-            margin-bottom: 20px;
-            font-size: 19px;
-            font-weight: bold;
+        h1 {
+            text-align: center;
+            color: #17365d;
+        }
+
+        .message {
+            padding: 12px;
+            margin: 12px 0;
+            border-radius: 5px;
+        }
+
+        .success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            min-width: 650px;
+            margin-top: 20px;
         }
 
         th, td {
-            padding: 15px 12px;
+            padding: 12px;
+            border: 1px solid #ddd;
             text-align: left;
-            border-bottom: 1px solid #e2e8f0;
         }
 
         th {
-            background: #1d4ed8;
+            background: #17365d;
             color: white;
-            font-size: 14px;
         }
 
-        td {
-            font-size: 14px;
+        tr:nth-child(even) {
+            background: #f2f6fc;
         }
 
-        tbody tr:hover {
-            background: #f8fafc;
+        input, select {
+            width: 100%;
+            min-width: 100px;
+            box-sizing: border-box;
+            padding: 7px;
+            border: 1px solid #aaa;
+            border-radius: 4px;
+            background: white;
+        }
+
+        input:disabled, select:disabled {
+            border-color: transparent;
+            background: transparent;
+            color: #222;
+            padding-left: 0;
+            appearance: none;
+            opacity: 1;
+        }
+
+        button {
+            padding: 8px 11px;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            margin: 2px;
+        }
+
+        .edit-button {
+            background: #1769aa;
+        }
+
+        .save-button {
+            background: #198754;
+        }
+
+        .cancel-button {
+            background: #6c757d;
+        }
+
+        .delete-button {
+            background: #dc3545;
+        }
+
+        .back-button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 11px 16px;
+            background: #17365d;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
         }
 
         .empty-message {
             text-align: center;
-            padding: 30px;
-            color: #64748b;
-        }
-
-        .button {
-            display: inline-block;
-            margin-top: 22px;
-            padding: 12px 18px;
-            background: #1d4ed8;
-            color: white;
-            text-decoration: none;
-            border-radius: 7px;
-            font-size: 14px;
-            font-weight: bold;
-        }
-
-        .button:hover {
-            background: #1e40af;
-        }
-
-        .count {
-            margin-bottom: 18px;
-            color: #475569;
-            font-size: 14px;
+            padding: 20px;
         }
     </style>
 </head>
 
 <body>
+    <div class="container">
+        <h1>UST Student Information Management System</h1>
 
-    <main class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <div class="message {{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endwith %}
 
-        <header class="header">
-            <h1>Student Records</h1>
-            <p>University Student Information Management System</p>
-        </header>
-
-        <section class="card">
-
-            <div class="table-heading">Registered Students</div>
-
-            <p class="count">
-                Total records: {{ students|length }}
-            </p>
-
-            {% if students %}
-
+        <div class="table-wrapper">
             <table>
                 <thead>
                     <tr>
@@ -135,35 +151,153 @@
                         <th>Email</th>
                         <th>Department</th>
                         <th>Semester</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
 
                 <tbody>
                     {% for student in students %}
                     <tr>
-                        <td>{{ student.student_id }}</td>
-                        <td>{{ student.full_name }}</td>
-                        <td>{{ student.email }}</td>
-                        <td>{{ student.department }}</td>
-                        <td>{{ student.semester }}</td>
+                        <td>
+                            <form
+                                id="update-{{ loop.index }}"
+                                action="{{ url_for('update_student', student_id=student.student_id) }}"
+                                method="POST">
+                            </form>
+                            {{ student.student_id }}
+                        </td>
+
+                        <td>
+                            <input
+                                type="text"
+                                name="full_name"
+                                value="{{ student.full_name }}"
+                                form="update-{{ loop.index }}"
+                                disabled
+                                required>
+                        </td>
+
+                        <td>
+                            <input
+                                type="email"
+                                name="email"
+                                value="{{ student.email }}"
+                                form="update-{{ loop.index }}"
+                                disabled
+                                required>
+                        </td>
+
+                        <td>
+                            <select
+                                name="department"
+                                form="update-{{ loop.index }}"
+                                disabled
+                                required>
+                                {% for dept in [
+                                    "Mathematics",
+                                    "Computer Science",
+                                    "Physics",
+                                    "Chemistry"
+                                ] %}
+                                    <option
+                                        value="{{ dept }}"
+                                        {% if student.department == dept %}selected{% endif %}>
+                                        {{ dept }}
+                                    </option>
+                                {% endfor %}
+                                {% if student.department not in [
+                                    "Mathematics",
+                                    "Computer Science",
+                                    "Physics",
+                                    "Chemistry"
+                                ] %}
+                                    <option value="{{ student.department }}" selected>
+                                        {{ student.department }}
+                                    </option>
+                                {% endif %}
+                            </select>
+                        </td>
+
+                        <td>
+                            <select
+                                name="semester"
+                                form="update-{{ loop.index }}"
+                                disabled
+                                required>
+                                {% for sem in range(1, 9) %}
+                                    <option
+                                        value="{{ sem }}"
+                                        {% if student.semester|string == sem|string %}selected{% endif %}>
+                                        {{ sem }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </td>
+
+                        <td>
+                            <button
+                                type="button"
+                                class="edit-button"
+                                onclick="enableEdit(this)">
+                                Edit
+                            </button>
+
+                            <button
+                                type="submit"
+                                form="update-{{ loop.index }}"
+                                class="save-button"
+                                hidden>
+                                Save
+                            </button>
+
+                            <button
+                                type="button"
+                                class="cancel-button"
+                                onclick="location.reload()"
+                                hidden>
+                                Cancel
+                            </button>
+
+                            <form
+                                action="{{ url_for('delete_student', student_id=student.student_id) }}"
+                                method="POST"
+                                onsubmit="return confirm('Are you sure you want to permanently delete this student record?');"
+                                style="display: inline;">
+                                <button type="submit" class="delete-button">
+                                    Delete
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="6" class="empty-message">
+                            No student records found.
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
+        </div>
 
-            {% else %}
+        <a href="{{ url_for('home') }}" class="back-button">
+            Back to Registration Form
+        </a>
+    </div>
 
-            <p class="empty-message">
-                No student records found. Please register a student first.
-            </p>
+    <script>
+        function enableEdit(button) {
+            const row = button.closest("tr");
+            const fields = row.querySelectorAll("input, select");
 
-            {% endif %}
+            fields.forEach(function(field) {
+                field.disabled = false;
+            });
 
-            <a href="/" class="button">Back to Registration Form</a>
-
-        </section>
-
-    </main>
-
+            button.hidden = true;
+            row.querySelector(".save-button").hidden = false;
+            row.querySelector(".cancel-button").hidden = false;
+        }
+    </script>
 </body>
 </html>

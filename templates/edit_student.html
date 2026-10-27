@@ -1,0 +1,255 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Student | University Portal</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 25px 16px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: Arial, sans-serif;
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 650px;
+            padding: 30px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(15, 23, 42, 0.08);
+        }
+
+        h1 {
+            margin-top: 0;
+            margin-bottom: 8px;
+            color: #0f172a;
+            font-size: 26px;
+        }
+
+        .subtitle {
+            margin-bottom: 25px;
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .message {
+            padding: 12px 14px;
+            margin-bottom: 18px;
+            border-radius: 7px;
+            font-size: 14px;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px 16px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-size: 14px;
+            font-weight: bold;
+            color: #334155;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            background: white;
+            font-size: 15px;
+            color: #0f172a;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 13px 18px;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            text-align: center;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .save {
+            background: #1d4ed8;
+            color: white;
+            flex: 1;
+        }
+
+        .save:hover {
+            background: #1e40af;
+        }
+
+        .cancel {
+            background: #e2e8f0;
+            color: #334155;
+        }
+
+        .cancel:hover {
+            background: #cbd5e1;
+        }
+
+        @media (max-width: 500px) {
+            .card {
+                padding: 22px 18px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .full-width {
+                grid-column: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="card">
+
+        <h1>Edit Student Record</h1>
+        <p class="subtitle">
+            Update the student information below and save your changes.
+        </p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <div class="message {{ category }}" role="status">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endwith %}
+
+        <form action="{{ url_for('update_student', student_id=student.student_id) }}"
+              method="POST">
+
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label for="student_id">Student ID *</label>
+                    <input
+                        type="text"
+                        id="student_id"
+                        name="student_id"
+                        value="{{ student.student_id }}"
+                        required>
+                </div>
+
+                <div class="form-group">
+                    <label for="name">Full Name *</label>
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        value="{{ student.full_name }}"
+                        required>
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="email">Email Address *</label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        value="{{ student.email }}"
+                        required>
+                </div>
+
+                <div class="form-group">
+                    <label for="department">Department *</label>
+                    <select id="department" name="department" required>
+                        <option value="">Select department</option>
+                        <option value="Mathematics"
+                            {% if student.department == "Mathematics" %}selected{% endif %}>
+                            Mathematics
+                        </option>
+                        <option value="Computer Science"
+                            {% if student.department == "Computer Science" %}selected{% endif %}>
+                            Computer Science
+                        </option>
+                        <option value="Physics"
+                            {% if student.department == "Physics" %}selected{% endif %}>
+                            Physics
+                        </option>
+                        <option value="Chemistry"
+                            {% if student.department == "Chemistry" %}selected{% endif %}>
+                            Chemistry
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="semester">Semester *</label>
+                    <select id="semester" name="semester" required>
+                        <option value="">Select semester</option>
+                        <option value="1" {% if student.semester|string == "1" %}selected{% endif %}>1st Semester</option>
+                        <option value="2" {% if student.semester|string == "2" %}selected{% endif %}>2nd Semester</option>
+                        <option value="3" {% if student.semester|string == "3" %}selected{% endif %}>3rd Semester</option>
+                        <option value="4" {% if student.semester|string == "4" %}selected{% endif %}>4th Semester</option>
+                        <option value="5" {% if student.semester|string == "5" %}selected{% endif %}>5th Semester</option>
+                        <option value="6" {% if student.semester|string == "6" %}selected{% endif %}>6th Semester</option>
+                        <option value="7" {% if student.semester|string == "7" %}selected{% endif %}>7th Semester</option>
+                        <option value="8" {% if student.semester|string == "8" %}selected{% endif %}>8th Semester</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <div class="actions">
+                <button type="submit" class="button save">Save Changes</button>
+                <a href="{{ url_for('view_students') }}" class="button cancel">Cancel</a>
+            </div>
+
+        </form>
+
+    </main>
+
+</body>
+</html>

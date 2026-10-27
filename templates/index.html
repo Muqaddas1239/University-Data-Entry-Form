@@ -19,51 +19,60 @@
             background: #f1f5f9;
             color: #1e293b;
             min-height: 100vh;
-            padding: 40px 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 16px;
+        }
+
+        .page-container {
+            width: 100%;
+            max-width: 650px;
+            margin: auto;
         }
 
         .header {
             text-align: center;
-            margin-bottom: 28px;
+            margin-bottom: 24px;
         }
 
         .university-icon {
-            width: 64px;
-            height: 64px;
+            width: 58px;
+            height: 58px;
             background: #1d4ed8;
             color: white;
-            border-radius: 18px;
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 28px;
+            font-size: 27px;
             font-weight: bold;
-            margin: 0 auto 16px;
+            margin: 0 auto 14px;
         }
 
         .header h1 {
-            font-size: 28px;
-            margin-bottom: 10px;
+            font-size: 27px;
+            margin-bottom: 9px;
             color: #0f172a;
         }
 
         .header p {
             color: #64748b;
-            font-size: 15px;
+            font-size: 14px;
         }
 
         .form-card {
             background: white;
-            max-width: 650px;
-            margin: 0 auto;
-            padding: 32px;
+            width: 100%;
+            padding: 30px;
             border-radius: 16px;
             box-shadow: 0 8px 30px rgba(15, 23, 42, 0.08);
         }
 
         .form-heading {
-            margin-bottom: 26px;
-            padding-bottom: 18px;
+            margin-bottom: 24px;
+            padding-bottom: 17px;
             border-bottom: 1px solid #e2e8f0;
         }
 
@@ -81,7 +90,7 @@
         .form-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 22px 18px;
+            gap: 20px 18px;
         }
 
         .form-group {
@@ -100,10 +109,9 @@
             color: #334155;
         }
 
-        input,
-        select {
+        input, select {
             width: 100%;
-            padding: 13px 12px;
+            padding: 12px;
             border: 1px solid #cbd5e1;
             border-radius: 8px;
             background: white;
@@ -112,35 +120,69 @@
             outline: none;
         }
 
-        input:focus,
-        select:focus {
+        input:focus, select:focus {
             border-color: #2563eb;
             box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
         }
 
         .submit-button {
             width: 100%;
-            margin-top: 28px;
+            margin-top: 25px;
             padding: 14px;
             background: #1d4ed8;
             color: white;
             border: none;
             border-radius: 8px;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: bold;
             cursor: pointer;
-            transition: background 0.2s;
         }
 
         .submit-button:hover {
             background: #1e40af;
         }
 
+        .message {
+            padding: 13px 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .success {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        .records-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .records-link a {
+            color: #1d4ed8;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .records-link a:hover {
+            text-decoration: underline;
+        }
+
         .footer {
             text-align: center;
             margin-top: 22px;
             color: #64748b;
-            font-size: 13px;
+            font-size: 12px;
         }
 
         @media (max-width: 550px) {
@@ -169,97 +211,108 @@
 
 <body>
 
-    <header class="header">
-        <div class="university-icon">U</div>
-        <h1>University Student Portal</h1>
-        <p>Student Information Management System</p>
-    </header>
+    <div class="page-container">
 
-    <main class="form-card">
+        <header class="header">
+            <div class="university-icon">U</div>
+            <h1>University Student Portal</h1>
+            <p>Student Information Management System</p>
+        </header>
 
-        <div class="form-heading">
-            <h2>Student Registration</h2>
-            <p>Please complete the form below to register student information.</p>
-        </div>
+        <main class="form-card">
 
-        <form action="/submit" method="POST">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% for category, message in messages %}
+                    <div class="message {{ category }}" role="status">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endwith %}
 
-            <div class="form-grid">
-
-                <div class="form-group">
-                    <label for="student_id">Student ID *</label>
-                    <input
-                        type="text"
-                        id="student_id"
-                        name="student_id"
-                        placeholder="e.g. BS001"
-                        required>
-                </div>
-
-                <div class="form-group">
-                    <label for="name">Full Name *</label>
-                    <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        placeholder="Enter full name"
-                        required>
-                </div>
-
-                <div class="form-group full-width">
-                    <label for="email">Email Address *</label>
-                    <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        placeholder="student@example.com"
-                        required>
-                </div>
-
-                <div class="form-group">
-                    <label for="department">Department *</label>
-                    <select id="department" name="department" required>
-                        <option value="">Select department</option>
-                        <option value="Mathematics">Mathematics</option>
-                        <option value="Computer Science">Computer Science</option>
-                        <option value="Physics">Physics</option>
-                        <option value="Chemistry">Chemistry</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="semester">Semester *</label>
-                    <select id="semester" name="semester" required>
-                        <option value="">Select semester</option>
-                        <option value="1">1st Semester</option>
-                        <option value="2">2nd Semester</option>
-                        <option value="3">3rd Semester</option>
-                        <option value="4">4th Semester</option>
-                        <option value="5">5th Semester</option>
-                        <option value="6">6th Semester</option>
-                        <option value="7">7th Semester</option>
-                        <option value="8">8th Semester</option>
-                    </select>
-                </div>
-
+            <div class="form-heading">
+                <h2>Student Registration</h2>
+                <p>Please complete the form below to register student information.</p>
             </div>
 
-            <button type="submit" class="submit-button">
-                Submit Student Information
-            </button>
+            <form action="{{ url_for('submit') }}" method="POST">
 
-        </form>
-        
-<p style="text-align: center; margin-top: 20px;">
-    <a href="/students">View Registered Students</a>
-</p>
+                <div class="form-grid">
 
+                    <div class="form-group">
+                        <label for="student_id">Student ID *</label>
+                        <input
+                            type="text"
+                            id="student_id"
+                            name="student_id"
+                            placeholder="e.g. BS001"
+                            required>
+                    </div>
 
-    </main>
+                    <div class="form-group">
+                        <label for="name">Full Name *</label>
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            placeholder="Enter full name"
+                            required>
+                    </div>
 
-    <footer class="footer">
-        University Student Portal | Student Registration System
-    </footer>
+                    <div class="form-group full-width">
+                        <label for="email">Email Address *</label>
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="student@example.com"
+                            required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="department">Department *</label>
+                        <select id="department" name="department" required>
+                            <option value="">Select department</option>
+                            <option value="Mathematics">Mathematics</option>
+                            <option value="Computer Science">Computer Science</option>
+                            <option value="Physics">Physics</option>
+                            <option value="Chemistry">Chemistry</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="semester">Semester *</label>
+                        <select id="semester" name="semester" required>
+                            <option value="">Select semester</option>
+                            <option value="1">1st Semester</option>
+                            <option value="2">2nd Semester</option>
+                            <option value="3">3rd Semester</option>
+                            <option value="4">4th Semester</option>
+                            <option value="5">5th Semester</option>
+                            <option value="6">6th Semester</option>
+                            <option value="7">7th Semester</option>
+                            <option value="8">8th Semester</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <button type="submit" class="submit-button">
+                    Submit Student Information
+                </button>
+
+            </form>
+
+            <div class="records-link">
+                <a href="{{ url_for('view_students') }}">View Registered Students</a>
+            </div>
+
+        </main>
+
+        <footer class="footer">
+            University Student Portal | Student Registration System
+        </footer>
+
+    </div>
 
 </body>
 </html>
